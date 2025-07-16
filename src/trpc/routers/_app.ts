@@ -3,6 +3,7 @@ import { baseProcedure, createTRPCRouter } from '../init';
 import { v4 as uuidv4 } from "uuid";
 import clientPromise from '@/lib/database.lib';
 import { TRPCError } from '@trpc/server';
+import bcrypt from "bcryptjs";
 
 export const appRouter = createTRPCRouter({
     register: baseProcedure
@@ -21,7 +22,13 @@ export const appRouter = createTRPCRouter({
                 });
             }
 
-            await users.insertOne(input);
+            const hashedPassword = await bcrypt.hash(input.password, 10);
+
+            await users.insertOne({
+                name: input.name,
+                email: input.email,
+                password: hashedPassword
+            });
 
             return {
                 message: "Usuario registrado exitosamente",
@@ -36,8 +43,9 @@ export const appRouter = createTRPCRouter({
             const users = db.collection("users");
 
             const user = await users.findOne({ email: input.email });
+            const passwordValid = await bcrypt.compare(input.password, user?.password);
 
-            if (!user || user.password !== input.password) {
+            if (!user || !passwordValid) {
                 throw new TRPCError({
                     code: "UNAUTHORIZED",
                     message: "Credenciales incorrectas",
