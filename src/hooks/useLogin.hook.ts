@@ -1,13 +1,17 @@
+'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function useLogin() {
-    const [ loading, setLoading ] = useState(false);
-    const [ error, setError ] = useState<string | null>(null);
+    const router = useRouter();
+    const [ loadingLogin, setLoadingLogin ] = useState(false);
+    const [ errorsLogin, setErrorsLogin ] = useState<{ [key: string]: string }>({});
+    
 
     const login = async (email: string, password: string) => {
-        setLoading(true);
-        setError(null);
+        setLoadingLogin(true);
+        setErrorsLogin({});
 
         try {
             const res = await fetch("/api/login", {
@@ -18,18 +22,26 @@ export function useLogin() {
 
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.error || "Login failed");
+
+                if (data?.errors && typeof data.errors === "object") {
+                    setErrorsLogin(data.errors);
+                } else {
+                    setErrorsLogin({ general: data.error || "Error al iniciar sesión" });
+                }
+
+                return false;
             }
+            router.push("/");
 
             return true;
         } catch (err: any) {
-            setError(err.message);
+            setErrorsLogin({ general: err.message || "Ocurrió un error inesperado" });
 
             return false;
         } finally {
-            setLoading(false);
+            setLoadingLogin(false);
         }
     };
 
-    return { login, loading, error };
+    return { login, loadingLogin, errorsLogin };
 }

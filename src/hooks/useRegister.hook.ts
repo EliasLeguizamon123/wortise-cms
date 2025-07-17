@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function useRegister() {
-    const [ loading, setLoading ] = useState(false);
-    const [ error, setError ] = useState<string | null>(null);
+    const router = useRouter();
+    const [ loadingRegister, setLoadingRegister ] = useState(false);
+    const [ errorsRegister, setErrorsRegister ] = useState<{ [key: string]: string }>({});
 
     const register = async (name: string, email: string, password: string) => {
-        setLoading(true);
-        setError(null);
+        setLoadingRegister(true);
+        setErrorsRegister({});
 
         try {
             const res = await fetch("/api/register", {
@@ -18,18 +21,26 @@ export function useRegister() {
 
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.error || "Registro fallido");
+
+                if (data?.errors && typeof data.errors === "object") {
+                    setErrorsRegister(data.errors);
+                } else {
+                    setErrorsRegister({ general: data.error || "Error al registrarse" });
+                }
+
+                return false;
             }
+            router.push("/");
 
             return true;
         } catch (err: any) {
-            setError(err.message);
+            setErrorsRegister({ general: err.message || "Ocurrió un error inesperado" });
 
             return false;
         } finally {
-            setLoading(false);
+            setLoadingRegister(false);
         }
     };
 
-    return { register, loading, error };
+    return { register, loadingRegister, errorsRegister };
 }
