@@ -37,7 +37,10 @@ export default function LoginPage() {
                 <CardContent>
                     <Tabs
                         value={mode}
-                        onValueChange={(value) => setMode(value as "login" | "register")}
+                        onValueChange={(value) => {
+                            setMode(value as "login" | "register")
+                            setForm({ name: "", email: "", password: "" });
+                        }}
                         className="w-full"
                     >
                         <TabsList className="grid w-full grid-cols-2">

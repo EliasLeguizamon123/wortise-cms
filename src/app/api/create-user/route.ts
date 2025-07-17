@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { registerSchema } from "@/lib/zodSchemas.lib";
 import clientPromise from "@/lib/database.lib";

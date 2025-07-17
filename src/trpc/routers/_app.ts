@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import clientPromise from '@/lib/database.lib';
 import { TRPCError } from '@trpc/server';
 import bcrypt from "bcryptjs";
+import { auth } from '@/lib/auth.lib';
 
 export const appRouter = createTRPCRouter({
     register: baseProcedure
@@ -30,6 +31,15 @@ export const appRouter = createTRPCRouter({
                 password: hashedPassword
             });
 
+            await auth.api.signUpEmail({
+                body: {
+                    email: input.email,
+                    password: input.password,
+                    name: input.name
+                },
+                asResponse: true
+            })
+
             return {
                 message: "Usuario registrado exitosamente",
                 token: uuidv4(),
@@ -51,6 +61,13 @@ export const appRouter = createTRPCRouter({
                     message: "Credenciales incorrectas",
                 });
             }
+
+            await auth.api.signInEmail({
+                body: {
+                    email: input.email,
+                    password: input.password,
+                }
+            })
 
             return {
                 message: "Login exitoso",
