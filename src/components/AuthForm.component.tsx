@@ -19,8 +19,8 @@ interface Props {
 
 export default function AuthForm({ mode, form, setForm }: Props) {
 
-    const { login, errorsLogin, loadingLogin } = useLogin();
-    const { register, errorsRegister, loadingRegister } = useRegister();
+    const { login, loadingLogin } = useLogin();
+    const { register, loadingRegister } = useRegister();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,7 +60,6 @@ export default function AuthForm({ mode, form, setForm }: Props) {
                                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                                 required
                             />
-                            {errorsLogin.email && <p className="text-sm text-red-500">{errorsLogin.email}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="login-password">Contraseña</Label>
@@ -72,7 +71,6 @@ export default function AuthForm({ mode, form, setForm }: Props) {
                                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                                 required
                             />
-                            {errorsLogin.password && <p className="text-sm text-red-500">{errorsLogin.password}</p>}
                         </div>
                         <Button type="submit" className="w-full" disabled={loadingLogin}>
                             {loadingLogin ? (
@@ -108,7 +106,6 @@ export default function AuthForm({ mode, form, setForm }: Props) {
                                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                                 required
                             />
-                            {errorsRegister.name && <p className="text-sm text-red-500">{errorsRegister.name}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="register-email">Email</Label>
@@ -120,7 +117,6 @@ export default function AuthForm({ mode, form, setForm }: Props) {
                                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                                 required
                             />
-                            {errorsRegister.email && <p className="text-sm text-red-500">{errorsRegister.email}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="register-password">Contraseña</Label>
@@ -132,7 +128,6 @@ export default function AuthForm({ mode, form, setForm }: Props) {
                                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                                 required
                             />
-                            {errorsRegister.password && <p className="text-sm text-red-500">{errorsRegister.password}</p>}
                         </div>
                         <Button type="submit" className="w-full" disabled={loadingRegister}>
                             {loadingRegister ? (

@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation"
 
 interface NavbarProps {
   currentRoute: string
-  userName?: string
 }
 
-export default function Navbar({ currentRoute, userName = "John Doe" }: NavbarProps) {
+export default function Navbar({ currentRoute }: NavbarProps) {
     const [ isDropdownOpen, setIsDropdownOpen ] = useState(false)
+    const userName = sessionStorage.getItem("user") || "Usuario"
 
     const router = useRouter()
 
