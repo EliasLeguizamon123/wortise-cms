@@ -1,46 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
+
+import { AuthService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function useRegister() {
     const router = useRouter();
     const [ loadingRegister, setLoadingRegister ] = useState(false);
-    const [ errorsRegister, setErrorsRegister ] = useState<{ [key: string]: string }>({});
 
     const register = async (name: string, email: string, password: string) => {
         setLoadingRegister(true);
-        setErrorsRegister({});
 
         try {
-            const res = await fetch("/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
-            });
+            const res = await AuthService.register(name, email, password);
 
-            if (!res.ok) {
-                const data = await res.json();
+            sessionStorage.setItem("user", res.user.name);
 
-                if (data?.errors && typeof data.errors === "object") {
-                    setErrorsRegister(data.errors);
-                } else {
-                    setErrorsRegister({ general: data.error || "Error al registrarse" });
-                }
-
-                return false;
-            }
             router.push("/");
 
             return true;
-        } catch (err: any) {
-            setErrorsRegister({ general: err.message || "Ocurrió un error inesperado" });
-
-            return false;
+        } catch (error: any) {
+            toast.error("Error al registrarse", { description: error.error || "Ocurrió un error inesperado" });
         } finally {
             setLoadingRegister(false);
         }
     };
 
-    return { register, loadingRegister, errorsRegister };
+    return { register, loadingRegister };
 }

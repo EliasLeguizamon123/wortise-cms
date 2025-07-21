@@ -16,7 +16,7 @@ export const articleCreateSchema = z.object({
     content: z.string().min(1, "El contenido es obligatorio"),
     coverImageUrl: z.string().url("URL inválida de imagen"),
     views: z.number().default(0),
-    likes: z.number().default(0),
+    likes: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
 });
 

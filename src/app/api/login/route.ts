@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const result = loginSchema.safeParse(body);
 
     if (!result.success) {
-        return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+        return NextResponse.json({ error: "Usuario o Password invalidos" }, { status: 400 });
     }
 
     const { email, password } = result.data;

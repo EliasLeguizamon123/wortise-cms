@@ -1,52 +1,35 @@
-'use client';
+"use client";
 
-import { trpc } from '@/trpc/client';
-import { useState } from 'react';
+import AuthorCard from "@/components/AuthorCard.component";
+import Navbar from "@/components/Navbar.component";
+import { trpc } from "@/trpc/client";
 
-export default function ArticleTest() {
-    const [ title, setTitle ] = useState('');
-    const [ content, setContent ] = useState('');
-    const [ coverImageUrl, setCoverImageUrl ] = useState('');
-    const createArticle = trpc.create.useMutation();
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        createArticle.mutate(
-            { title, content, coverImageUrl },
-            {
-                onSuccess: (data) => {
-                    console.log("✅ Artículo creado:", data);
-                },
-                onError: (error) => {
-                    console.error("❌ Error al crear artículo:", error.message);
-                },
-            }
-        );
-    };
+export default function AuthorsPage() {
+    const { data: authors, isLoading } = trpc.getAuthorsWithArticlesCount.useQuery();
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                placeholder="Título"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="border p-2"
-            />
-            <textarea
-                placeholder="Contenido"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="border p-2"
-            />
-            <input
-                placeholder="URL de la imagen de portada"
-                value={coverImageUrl}
-                onChange={(e) => setCoverImageUrl(e.target.value)}
-                className="border p-2"
-            />
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-                Crear artículo
-            </button>
-        </form>
+        <div className="min-h-screen bg-gray-50">
+            <Navbar currentRoute="Dashboard" />
+            <div className="max-w-4xl mx-auto pt-12">
+                {isLoading ? (
+                    <div className="flex flex-col gap-4">
+                        {/* Loading skeletons */}
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <div key={index} className="w-full h-20 rounded-md bg-gray-200 animate-pulse" />
+                        ))}
+                    </div>
+                ) : authors && authors.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                        {authors.map((author) => (
+                            <AuthorCard key={author.id} author={author} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No authors found</p>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }
