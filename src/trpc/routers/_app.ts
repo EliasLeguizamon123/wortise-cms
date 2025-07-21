@@ -143,38 +143,45 @@ export const appRouter = createTRPCRouter({
                 { $pull: { likes: ctx.session.user.id } }
             )
         }),
-    getAuthorsWithArticlesCount: baseProcedure
-        .query(async () => {
-            const client = await clientPromise;
-            const db = client.db();
-            const users = db.collection("user");
+    getAuthorsWithArticlesCount: baseProcedure.query(async () => {
+        const client = await clientPromise;
+        const db = client.db();
+        const users = db.collection("user");
 
-            const result = await users.aggregate([
-                {
-                    $lookup: {
-                        from: "articles",
-                        localField: "_id",
-                        foreignField: "authorId",
-                        as: "articles"
-                    }
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        name: 1,
-                        email: 1,
-                        articlesCount: { $size: "$articles" }
-                    }
+        const result = await users.aggregate([
+            {
+                $lookup: {
+                    from: "articles",
+                    let: { userId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: [ "$authorId", { $toString: "$$userId" } ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "articles"
                 }
-            ]).toArray();
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    articlesCount: { $size: "$articles" }
+                }
+            }
+        ]).toArray();
 
-            return result.map(user => ({
-                id: user._id.toString(),
-                name: user.name,
-                email: user.email,
-                articlesCount: user.articlesCount
-            }));
-        })
+        return result.map(user => ({
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+            articlesCount: user.articlesCount
+        }));
+    })
 });
 
 export type AppRouter = typeof appRouter;
