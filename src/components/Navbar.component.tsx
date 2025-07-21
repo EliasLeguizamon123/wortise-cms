@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LayoutDashboard, ChevronDown, User } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { AuthService } from "@/services/auth.service"
@@ -12,7 +12,12 @@ interface NavbarProps {
 
 export default function Navbar({ currentRoute }: NavbarProps) {
     const [ isDropdownOpen, setIsDropdownOpen ] = useState(false)
-    const userName = sessionStorage.getItem("user") || "Usuario"
+    const [ userName, setUserName ] = useState("Usuario")
+
+    useEffect(() => {
+        const name = sessionStorage.getItem("user")
+        if (name) setUserName(name)
+    }, [])
 
     const router = useRouter()
 

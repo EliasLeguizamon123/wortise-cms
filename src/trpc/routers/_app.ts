@@ -2,8 +2,7 @@ import { z } from 'zod';
 import { articleCreateSchema } from '@/lib/zodSchemas.lib';
 import { baseProcedure, createTRPCRouter } from '../init';
 import clientPromise from '@/lib/database.lib';
-import { ObjectId } from 'mongodb';
-import { Article } from '@/models/Article.model';
+import { Article, ArticleCreate } from '@/models/Article.model';
 
 export const appRouter = createTRPCRouter({
     create: baseProcedure
@@ -12,12 +11,12 @@ export const appRouter = createTRPCRouter({
             const client = await clientPromise;
             const db = client.db();
 
-            const articles = db.collection<Article>("articles");
+            const articles = db.collection("articles");
 
-            const newArticle = {
+            const newArticle: ArticleCreate = {
                 ...input,
                 authorId: ctx.session.user.id,
-                createdAt: new Date(),
+                createdAt: new Date().toString(),
             }
 
             const result = await articles.insertOne(newArticle);
@@ -40,8 +39,7 @@ export const appRouter = createTRPCRouter({
             }));
         }),
     getAllMyArticles: baseProcedure
-        .input(articleCreateSchema)
-        .mutation(async ({ ctx }) => {
+        .query(async ({ ctx }) => {
             const client = await clientPromise;
             const db = client.db();
             const articles = db.collection<Article>("articles");
@@ -59,14 +57,14 @@ export const appRouter = createTRPCRouter({
             const client = await clientPromise;
             const db = client.db();
             const articles = db.collection<Article>("articles");
-            const article = await articles.findOne({ _id: new ObjectId(id), authorId: ctx.session.user.id });
+            const article = await articles.findOne({ _id: id, authorId: ctx.session.user.id });
 
             if (!article) {
                 throw new Error("Articulo no encontrado");
             }
 
             await articles.updateOne(
-                { _id: new ObjectId(id) },
+                { _id: id },
                 { $inc: { visitCount: 1 } }
             );
 
@@ -87,7 +85,7 @@ export const appRouter = createTRPCRouter({
             
             const result = await articles.updateOne(
                 {
-                    _id: new ObjectId(input.id),
+                    _id: input.id,
                     authorId: ctx.session.user.id
                 },
                 {
@@ -109,7 +107,7 @@ export const appRouter = createTRPCRouter({
             const articles = db.collection<Article>("articles");
 
             const result = await articles.deleteOne({
-                _id: new ObjectId(id),
+                _id: id,
                 authorId: ctx.session.user.id
             })
 
@@ -127,7 +125,7 @@ export const appRouter = createTRPCRouter({
             const articles = db.collection<Article>("articles");
 
             await articles.updateOne(
-                { _id: new ObjectId(id) },
+                { _id: id },
                 { $addToSet: { likes: ctx.session.user.id } }
             )
         }),
@@ -139,7 +137,7 @@ export const appRouter = createTRPCRouter({
             const articles = db.collection<Article>("articles");
 
             await articles.updateOne(
-                { _id: new ObjectId(id) },
+                { _id: id },
                 { $pull: { likes: ctx.session.user.id } }
             )
         }),
