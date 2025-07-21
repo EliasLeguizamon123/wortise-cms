@@ -1,6 +1,9 @@
+import { z } from 'zod';
 import { articleCreateSchema } from '@/lib/zodSchemas.lib';
 import { baseProcedure, createTRPCRouter } from '../init';
 import clientPromise from '@/lib/database.lib';
+import { ObjectId } from 'mongodb';
+import { Article } from '@/models/Article.model';
 
 export const appRouter = createTRPCRouter({
     create: baseProcedure
@@ -9,7 +12,7 @@ export const appRouter = createTRPCRouter({
             const client = await clientPromise;
             const db = client.db();
 
-            const articles = db.collection("articles")
+            const articles = db.collection<Article>("articles");
 
             const newArticle = {
                 ...input,
@@ -23,6 +26,122 @@ export const appRouter = createTRPCRouter({
                 message: "Articulo creado",
                 id: result.insertedId.toString(),
             }
+        }),
+    getAllArticles: baseProcedure
+        .mutation(async () => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+            const allArticles = await articles.find().toArray();
+
+            return allArticles.map(article => ({
+                ...article,
+                id: article._id.toString(),
+            }));
+        }),
+    getAllMyArticles: baseProcedure
+        .input(articleCreateSchema)
+        .mutation(async ({ ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+            const myArticles = await articles.find({ authorId: ctx.session.user.id }).toArray();
+
+            return myArticles.map(article => ({
+                ...article,
+                id: article._id.toString(),
+            }));
+
+        }),
+    getArticleById: baseProcedure
+        .input(z.string())
+        .mutation(async ({ input: id, ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+            const article = await articles.findOne({ _id: new ObjectId(id), authorId: ctx.session.user.id });
+
+            if (!article) {
+                throw new Error("Articulo no encontrado");
+            }
+
+            await articles.updateOne(
+                { _id: new ObjectId(id) },
+                { $inc: { visitCount: 1 } }
+            );
+
+            return {
+                ...article,
+                id: article._id.toString(),
+            };
+        }),
+    updateArticle: baseProcedure
+        .input(z.object({
+            id: z.string(),
+            data: articleCreateSchema.partial()
+        }))
+        .mutation(async ( { input, ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+            
+            const result = await articles.updateOne(
+                {
+                    _id: new ObjectId(input.id),
+                    authorId: ctx.session.user.id
+                },
+                {
+                    $set: { ...input.data }
+                }
+            );
+
+            if (result.modifiedCount === 0) {
+                throw new Error("No se encontro el articulo o no tienes permisos");
+            }
+
+            return { message: "Articulo actualizado" };
+        }),
+    deleteArticleById: baseProcedure
+        .input(z.string())
+        .mutation(async ({ input: id, ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+
+            const result = await articles.deleteOne({
+                _id: new ObjectId(id),
+                authorId: ctx.session.user.id
+            })
+
+            if (result.deletedCount === 0) {
+                throw new Error("No se encontro el articulo o no tienes permisos");
+            }
+
+            return { message: "Articulo eliminado" };
+        }),
+    likeArticle: baseProcedure
+        .input(z.string())
+        .mutation(async ({ input: id, ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+
+            await articles.updateOne(
+                { _id: new ObjectId(id) },
+                { $addToSet: { likes: ctx.session.user.id } }
+            )
+        }),
+    unlikeArticle: baseProcedure
+        .input(z.string())
+        .mutation(async ({ input: id, ctx }) => {
+            const client = await clientPromise;
+            const db = client.db();
+            const articles = db.collection<Article>("articles");
+
+            await articles.updateOne(
+                { _id: new ObjectId(id) },
+                { $pull: { likes: ctx.session.user.id } }
+            )
         })
 });
 

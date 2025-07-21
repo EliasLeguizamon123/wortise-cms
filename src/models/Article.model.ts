@@ -8,6 +8,6 @@ export interface Article {
     authorId: string;
     createdAt: Date;
     views?: number;
-    likes?: number;
+    likes?: string[];
     tags?: string[];
 }
