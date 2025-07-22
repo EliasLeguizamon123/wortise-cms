@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "Wortise CMS",
     description: "Challenge for Wortise",
+    icons: {
+        icon: "/logo.svg",
+    },
 };
 
 export default function RootLayout({

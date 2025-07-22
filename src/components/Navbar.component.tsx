@@ -46,12 +46,17 @@ export default function Navbar({ currentRoute }: NavbarProps) {
         setIsDropdownOpen(false)
     }
 
+    const handleGoDashboard = () => {
+        router.push("/")
+        setIsDropdownOpen(false)
+    }
+
     return (
         <nav className="bg-white shadow-md  sm:px-8 h-16 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto h-full flex justify-between items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" onClick={handleGoDashboard}>
                     <LayoutDashboard className="h-6 w-6 text-gray-700" />
-                    <h1 className="text-lg font-semibold text-gray-900">{currentRoute}</h1>
+                    <h1 className="cursor-pointer text-lg font-semibold text-gray-900">{currentRoute}</h1>
                 </div>
                 <div className="relative">
                     <button
@@ -85,6 +90,12 @@ export default function Navbar({ currentRoute }: NavbarProps) {
                                     className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700 transition-colors duration-150 cursor-pointer"
                                 >
                                     Nuevo artículo
+                                </button>
+                                <button
+                                    onClick={handleGoDashboard}
+                                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700 transition-colors duration-150 cursor-pointer"
+                                >
+                                    Ver autores
                                 </button>
                                 <hr className="my-1 border-gray-200" />
                                 <button
