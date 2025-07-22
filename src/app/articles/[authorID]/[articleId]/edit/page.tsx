@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
@@ -14,6 +15,7 @@ export default function EditArticleView() {
     const pathname = usePathname()
     const segments = pathname?.split("/") || []
     const articleId = segments[segments.length - 2]
+    const authorId = segments[segments.length - 3]
 
     const [ title, setTitle ] = useState("")
     const [ tags, setTags ] = useState<string[]>([])
@@ -29,6 +31,12 @@ export default function EditArticleView() {
 
     useEffect(() => {
         if (article) {
+            if (article.authorId !== authorId) {
+                toast.error("No tenés permiso para editar este artículo");
+                router.back();
+
+                return
+            }
             setTitle(article.title)
             setTags(article.tags || [])
             setContent(article.content)

@@ -5,6 +5,9 @@ import { Heart } from "lucide-react"
 import { motion } from "framer-motion"
 import { trpc } from "@/trpc/client"
 import { Article } from "@/models/Article.model"
+import { toast } from "sonner"
+import { Button } from "./ui/button"
+import { usePathname, useRouter } from "next/navigation"
 
 interface ArticleMetaProps {
   article: Article
@@ -14,7 +17,11 @@ interface ArticleMetaProps {
 export default function ArticleMeta({ article, userId }: ArticleMetaProps) {
     const [ isLiked, setIsLiked ] = useState(false)
     const [ likesCount, setLikesCount ] = useState(article.likes?.length || 0)
-    const utils = trpc.useContext()
+    
+    const utils = trpc.useContext();
+    const router = useRouter();
+    const pathname = usePathname();
+
 
     useEffect(() => {
         if (userId) {
@@ -42,7 +49,7 @@ export default function ArticleMeta({ article, userId }: ArticleMetaProps) {
 
     const handleToggleLike = () => {
         if (!userId) {
-            alert("Debes estar logueado para dar like")
+            toast.error("Debes registrarte para poder interactuar con los artículos")
 
             return
         }
@@ -52,6 +59,10 @@ export default function ArticleMeta({ article, userId }: ArticleMetaProps) {
         } else {
             likeMutation.mutate(article._id.toString())
         }
+    }
+
+    const handleEditArticle = () => {
+        router.push(`${pathname}/edit`)
     }
 
     return (
@@ -71,17 +82,23 @@ export default function ArticleMeta({ article, userId }: ArticleMetaProps) {
                     <Heart className="h-5 w-5" />
                 </motion.div>
                 <span>{likesCount} {likesCount === 1 ? "like" : "likes"}</span>
+                {userId === article.authorId && (
+                    <Button className="cursor-pointer mx-4" onClick={handleEditArticle}>
+                    Editar tu artículo
+                    </Button>
+                )}
             </div>
 
             {article.tags && article.tags.length > 0 && (
                 <div className="flex gap-2 flex-wrap">
                     {article.tags.map((tag, index) => (
-                        <span key={index} className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-md">
+                        <span key={index} className="cursor-default text-sm bg-zinc-300 text-zinc-700 px-2 py-1 rounded-md">
                             {tag}
                         </span>
                     ))}
                 </div>
             )}
+            
         </div>
     )
 }
