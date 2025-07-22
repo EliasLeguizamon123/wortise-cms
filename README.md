@@ -6,6 +6,8 @@ Este proyecto es un **CMS (Content Management System)** desarrollado como challe
 
 Wortise CMS permite la gestión de artículos y usuarios, ofreciendo una experiencia moderna y optimizada tanto para desarrolladores como para usuarios finales. El sistema aprovecha las últimas características de Next.js y una arquitectura modular para facilitar su mantenimiento y escalabilidad.
 
+[Link del proyecto](https://wortise-cms.vercel.app/login)
+
 ## Tecnologías utilizadas
 
 Las principales tecnologías y librerías empleadas en este proyecto (ver `package.json`) son:
