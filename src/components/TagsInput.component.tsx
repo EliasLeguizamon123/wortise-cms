@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, KeyboardEvent, ChangeEvent } from "react";
 
 export default function TagsInput({
@@ -6,7 +7,7 @@ export default function TagsInput({
     maxTags = 5,
 }: {
   tags: string[];
-  setTags: React.Dispatch<React.SetStateAction<string[]>>;
+  setTags: (tags: string[]) => void;
   maxTags?: number;
 }) {
     const [ inputValue, setInputValue ] = useState("");
