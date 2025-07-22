@@ -4,6 +4,7 @@ import { baseProcedure, createTRPCRouter, publicProcedure } from '../init';
 import clientPromise from '@/lib/database.lib';
 import { Article, ArticleCreate } from '@/models/Article.model';
 import { ObjectId } from 'mongodb';
+import { TRPCError } from '@trpc/server';
 
 export const appRouter = createTRPCRouter({
     create: baseProcedure
@@ -94,8 +95,13 @@ export const appRouter = createTRPCRouter({
                 }
             );
 
+            
+            if (result.matchedCount === 0) {
+                throw new TRPCError({ code: "FORBIDDEN", message: "No tienes permisos o no se encontró el artículo" })
+            }
+
             if (result.modifiedCount === 0) {
-                throw new Error("No se encontro el articulo o no tienes permisos");
+                throw new TRPCError({ code: "BAD_REQUEST", message: "No hiciste ningún cambio" })
             }
 
             return { message: "Articulo actualizado" };

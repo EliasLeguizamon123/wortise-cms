@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -5,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation"
 import { trpc } from "@/trpc/client"
 import Navbar from "@/components/Navbar.component"
 import EditArticleBody from "@/components/EditArticleBody.component"
+import FetchingArticleSkeleton from "@/components/FetchingArticleSkeleton.component"
+import { toast } from "sonner"
 
 export default function EditArticleView() {
     const router = useRouter()
@@ -55,7 +58,10 @@ export default function EditArticleView() {
 
             router.push(`/articles/${segments[segments.length - 3]}`)
         } catch (err) {
-            console.error("Error al actualizar el artículo", err)
+
+            toast.error((err as any)?.message || "Error al actualizar el artículo")
+
+            
         } finally {
             setIsLoading(false)
         }
@@ -79,12 +85,7 @@ export default function EditArticleView() {
                     className="space-y-6"
                 >
                     {isFetching ? (
-                        <div className="space-y-6 animate-pulse">
-                            <div className="h-10 bg-gray-200 rounded w-3/4" />
-                            <div className="h-10 bg-gray-200 rounded w-1/2" />
-                            <div className="h-10 bg-gray-200 rounded w-full" />
-                            <div className="h-[400px] bg-gray-200 rounded" />
-                        </div>
+                        <FetchingArticleSkeleton />
                     ) : (
                         <EditArticleBody
                             title={title}

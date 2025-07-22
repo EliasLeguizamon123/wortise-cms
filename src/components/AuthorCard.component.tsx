@@ -8,7 +8,7 @@ export default function AuthorCard({ author }: Props) {
     return(
         <div
             key={author.id}
-            className="w-full bg-white shadow rounded-md p-4 hover:shadow-md transition-shadow duration-200"
+            className="cursor-default w-full bg-white shadow rounded-md p-4 hover:shadow-md transition-shadow duration-200"
         >
             <div className="flex justify-between items-start">
                 <div className="flex-1">

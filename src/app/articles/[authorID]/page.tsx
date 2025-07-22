@@ -28,10 +28,10 @@ export default function MyArticlesPage() {
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                             <input
                                 type="text"
-                                placeholder="Search articles by title..."
+                                placeholder="Buscar articulos por titulo..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-zinc-900 focus:border-transparent outline-none transition-all duration-200"
                             />
                         </div>
                     </div>
@@ -58,12 +58,12 @@ export default function MyArticlesPage() {
                     {!isLoading && filteredArticles.length === 0 && (
                         <div className="text-center py-12">
                             <p className="text-gray-500 text-lg">
-                                {searchQuery ? "No articles found matching your search" : "No articles found"}
+                                {searchQuery ? "No se encontraron artículos que coincidan con tu búsqueda" : "No se encontraron artículos"}
                             </p>
                             {searchQuery && (
                                 <button
                                     onClick={() => setSearchQuery("")}
-                                    className="mt-2 text-blue-600 hover:text-blue-800 font-medium"
+                                    className="mt-2 text-zinc-700 hover:text-zinc-900 font-medium"
                                 >
                                     Limpiar búsqueda
                                 </button>
