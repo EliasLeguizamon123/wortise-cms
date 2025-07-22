@@ -89,6 +89,12 @@ La aplicación está conectada a una instancia de **MongoDB Atlas** en la nube, 
 - Versión mobile mejorada y navegación offline-first.
 - Tests automatizados (unitarios y end-to-end con Playwright).
 
+
+## IA Utilizada
+
+- [ChatGPT](https://chatgpt.com/c/687582c8-f3a4-8010-8e66-ba3b124e71b5)
+- [V0](https://v0.dev/chat/combined-react-login-form-cbUkKVEhpwZ)
+
 ---
 
-_Desarrollado con ❤️ por Elias como parte del challenge técnico de Wortise._
+_Desarrollado con ❤️ por Elias como parte del challenge técnico para Wortise._
