@@ -1,6 +1,7 @@
+import { ObjectId } from "mongodb";
 
 export interface Article {
-    _id: string;
+    _id: ObjectId | string;
     title: string;
     content: string;
     coverImageUrl: string;

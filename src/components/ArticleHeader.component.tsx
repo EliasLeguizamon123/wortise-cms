@@ -19,7 +19,7 @@ export default function ArticleHeader({ article }: { article: Article }) {
                 </div>
             )}
 
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center">
                 <h1 className="text-white text-3xl font-bold text-center px-4">{article.title}</h1>
             </div>
         </div>

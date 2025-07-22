@@ -3,6 +3,7 @@ import { articleCreateSchema } from '@/lib/zodSchemas.lib';
 import { baseProcedure, createTRPCRouter } from '../init';
 import clientPromise from '@/lib/database.lib';
 import { Article, ArticleCreate } from '@/models/Article.model';
+import { ObjectId } from 'mongodb';
 
 export const appRouter = createTRPCRouter({
     create: baseProcedure
@@ -53,11 +54,11 @@ export const appRouter = createTRPCRouter({
         }),
     getArticleById: baseProcedure
         .input(z.string())
-        .mutation(async ({ input: id, ctx }) => {
+        .query(async ({ input: id, ctx }) => {
             const client = await clientPromise;
             const db = client.db();
             const articles = db.collection<Article>("articles");
-            const article = await articles.findOne({ _id: id, authorId: ctx.session.user.id });
+            const article = await articles.findOne({ _id: new ObjectId(id), authorId: ctx.session.user.id });
 
             if (!article) {
                 throw new Error("Articulo no encontrado");
