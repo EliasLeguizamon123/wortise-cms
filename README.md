@@ -81,13 +81,14 @@ La aplicación está conectada a una instancia de **MongoDB Atlas** en la nube, 
 
 ## Cosas que mejoraría o implementaría
 
-- Implementar roles de usuario (admin, editor, etc).
 - Agregar paginación a la lista de artículos.
 - Mejorar accesibilidad (a11y) en formularios y botones.
 - SEO básico con metadatos dinámicos por artículo.
 - Soporte para imágenes en los artículos.
 - Versión mobile mejorada y navegación offline-first.
 - Tests automatizados (unitarios y end-to-end con Playwright).
+- Que usuarios no registrados puedan dar Like a los posts
+- Tener un boton para compartir un post por redes sociales
 
 
 ## IA Utilizada
