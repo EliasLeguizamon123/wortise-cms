@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth.lib"
+import { deleteCookie } from "cookies-next"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
@@ -15,6 +16,8 @@ export async function POST() {
         body: { token: session.session.token },
         headers: await headers(),
     })
+
+    deleteCookie("user")
 
     const response = NextResponse.json({ success: true })
     response.cookies.set("better-auth.session_token", "", {

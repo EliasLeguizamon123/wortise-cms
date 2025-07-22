@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthService } from "@/services/auth.service";
 import { toast } from "sonner";
+import { setCookie } from "cookies-next";
 
 export function useLogin() {
     const router = useRouter();
@@ -16,7 +17,13 @@ export function useLogin() {
         try {
             const res = await AuthService.login(email, password);
 
-            sessionStorage.setItem("user", res.user.name);
+            //* Save username in cookie of 7 days expiration
+            const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+
+            setCookie("user", res.user.name, {
+                expires,
+                path: "/",
+            });
             router.push("/");
 
             return true;
