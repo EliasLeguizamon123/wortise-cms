@@ -10,7 +10,7 @@ Wortise CMS permite la gestión de artículos y usuarios, ofreciendo una experie
 
 Las principales tecnologías y librerías empleadas en este proyecto (ver `package.json`) son:
 
-- **Next.js** 14 (App Router)
+- **Next.js** 15
 - **React** (con Server y Client Components)
 - **TypeScript**
 - **MongoDB Atlas** (base de datos en la nube)
