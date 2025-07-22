@@ -93,7 +93,7 @@ La aplicación está conectada a una instancia de **MongoDB Atlas** en la nube, 
 
 ## IA Utilizada
 
-- [ChatGPT](https://chatgpt.com/c/687582c8-f3a4-8010-8e66-ba3b124e71b5)
+- [ChatGPT](https://chatgpt.com/share/687ff393-03fc-8010-83f2-a58113c8168b)
 - [V0](https://v0.dev/chat/combined-react-login-form-cbUkKVEhpwZ)
 
 ---
