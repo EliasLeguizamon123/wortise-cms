@@ -16,7 +16,7 @@ export default function AuthorCard({ author }: Props) {
                     <p className="text-sm text-gray-500">{author.email}</p>
                 </div>
                 <div className="text-right">
-                    <span className="text-blue-600 font-bold">{author.articlesCount} articles published</span>
+                    <span className="text-blue-600 font-bold">{author.articlesCount} artículos publicados</span>
                 </div>
             </div>
         </div>

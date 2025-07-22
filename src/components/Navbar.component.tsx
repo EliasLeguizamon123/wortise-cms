@@ -5,6 +5,8 @@ import { LayoutDashboard, ChevronDown, User } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { AuthService } from "@/services/auth.service"
 import { useRouter } from "next/navigation"
+import { getCookie } from "cookies-next"
+import { ActualUser } from "@/models/ActualUser.model"
 
 interface NavbarProps {
   currentRoute: string
@@ -12,12 +14,15 @@ interface NavbarProps {
 
 export default function Navbar({ currentRoute }: NavbarProps) {
     const [ isDropdownOpen, setIsDropdownOpen ] = useState(false)
-    const [ userName, setUserName ] = useState("Usuario")
+    const [ user, setUser ] = useState<ActualUser>();
 
     useEffect(() => {
-        const name = sessionStorage.getItem("user")
-        if (name) setUserName(name)
-    }, [])
+        const user = getCookie("user");
+
+        if (typeof user === "string") {
+            setUser(JSON.parse(user));
+        }
+    }, []);
 
     const router = useRouter()
 
@@ -26,12 +31,12 @@ export default function Navbar({ currentRoute }: NavbarProps) {
     }
 
     const handleViewArticles = () => {
-        router.push("/articles")
+        router.push(`/articles/${user?.id}`)
         setIsDropdownOpen(false)
     }
 
     const handleNewArticle = () => {
-        router.push("/articles/new")
+        router.push(`/articles/${user?.id}/new`)
         setIsDropdownOpen(false)
     }
 
@@ -42,28 +47,23 @@ export default function Navbar({ currentRoute }: NavbarProps) {
     }
 
     return (
-        <nav className="bg-white shadow-md px-4 sm:px-8 h-16 sticky top-0 z-50">
+        <nav className="bg-white shadow-md  sm:px-8 h-16 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto h-full flex justify-between items-center">
-                {/* Left section */}
                 <div className="flex items-center gap-2">
                     <LayoutDashboard className="h-6 w-6 text-gray-700" />
                     <h1 className="text-lg font-semibold text-gray-900">{currentRoute}</h1>
                 </div>
-
-                {/* Right section */}
                 <div className="relative">
                     <button
                         onClick={handleDropdownToggle}
                         className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200 cursor-pointer"
                     >
                         <User className="h-4 w-4" />
-                        <span>{userName}</span>
+                        <span>{user?.name}</span>
                         <ChevronDown
                             className={`h-4 w-4 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
                         />
                     </button>
-
-                    {/* Dropdown menu with animation */}
                     <AnimatePresence>
                         {isDropdownOpen && (
                             <motion.div
@@ -98,8 +98,6 @@ export default function Navbar({ currentRoute }: NavbarProps) {
                     </AnimatePresence>
                 </div>
             </div>
-
-            {/* Overlay para cerrar al clickear afuera */}
             {isDropdownOpen && (
                 <div
                     className="fixed inset-0 z-40"

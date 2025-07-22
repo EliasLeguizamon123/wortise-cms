@@ -2,7 +2,7 @@
 "use client";
 import { Article } from "@/models/Article.model"
 import { Pencil, Trash } from "lucide-react"
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react"
 
 export interface Props {
@@ -13,6 +13,7 @@ export default function ArticleCard({ article }: Props) {
     const [ imageErrors, setImageErrors ] = useState<Set<string>>(new Set())
 
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleImageError = (articleId: string) => {
         setImageErrors((prev) => new Set(prev).add(articleId))
@@ -29,7 +30,7 @@ export default function ArticleCard({ article }: Props) {
     }
 
     const handleCardClick = (articleId: string) => {
-        router.push(`/articles/${articleId}`)
+        router.push(`${pathname}/${articleId}`)
     }
 
     return (

@@ -20,7 +20,7 @@ export function useLogin() {
             //* Save username in cookie of 7 days expiration
             const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
-            setCookie("user", res.user.name, {
+            setCookie("user", JSON.stringify(res.user), {
                 expires,
                 path: "/",
             });
