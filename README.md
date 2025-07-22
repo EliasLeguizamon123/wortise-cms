@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wortise CMS
 
-## Getting Started
+Este proyecto es un **CMS (Content Management System)** desarrollado como challenge técnico para la empresa Wortise. Está construido utilizando [Next.js](https://nextjs.org/) y se conecta a una base de datos **MongoDB Atlas** en la nube.
 
-First, run the development server:
+## Introducción
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Wortise CMS permite la gestión de artículos y usuarios, ofreciendo una experiencia moderna y optimizada tanto para desarrolladores como para usuarios finales. El sistema aprovecha las últimas características de Next.js y una arquitectura modular para facilitar su mantenimiento y escalabilidad.
+
+## Tecnologías utilizadas
+
+Las principales tecnologías y librerías empleadas en este proyecto (ver `package.json`) son:
+
+- **Next.js** 14 (App Router)
+- **React** (con Server y Client Components)
+- **TypeScript**
+- **MongoDB Atlas** (base de datos en la nube)
+- **Zod** (validación de esquemas)
+- **tRPC** (API type-safe para comunicación cliente-servidor)
+- **React Hook Form** + **Zod Resolver**
+- **TanStack Query** (data fetching con cache)
+- **Tailwind CSS** (estilado)
+- **Sonner** (notificaciones)
+- **ESLint** y **Prettier** (calidad y formato de código)
+- **PostCSS**
+- **next/font** (optimización de fuentes)
+- **Geist** (fuente principal de UI)
+- **BetterAuth** (autenticación basada en cookies)
+
+## Estructura de carpetas
+
+La estructura principal del proyecto es la siguiente:
+
+```
+wortise-cms/
+├── .env
+├── .gitignore
+├── components.json
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── postcss.config.mjs
+├── README.md
+├── tsconfig.json
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── articles/
+│   │       └── [authorId]/
+│   │           ├── page.tsx
+│   │           └── [articleId]/edit/page.tsx
+│   ├── components/
+│   ├── lib/
+│   ├── models/
+│   ├── trpc/
+│   └── middleware.ts
+├── .vscode/
+│   └── settings.json
+└── .next/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Descripción de carpetas importantes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **public/**: Archivos estáticos y recursos públicos.
+- **src/app/**: Rutas y páginas principales de la aplicación.
+- **src/components/**: Componentes reutilizables de React.
+- **src/lib/**: Librerías y utilidades (por ejemplo, validaciones con Zod).
+- **src/models/**: Definición de modelos y tipos.
+- **src/trpc/**: Routers y configuración de tRPC para la API.
+- **.next/**: Archivos generados tras el build (no editar manualmente).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Autenticación
 
-## Learn More
+El sistema utiliza `better-auth` para manejar autenticación basada en cookies. El middleware protege rutas específicas, y los tokens de sesión se almacenan y consultan desde MongoDB. Solo el autor de un artículo puede editarlo.
 
-To learn more about Next.js, take a look at the following resources:
+## Conexión a la base de datos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+La aplicación está conectada a una instancia de **MongoDB Atlas** en la nube, lo que permite almacenar y consultar los datos de manera segura y escalable.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Cosas que mejoraría o implementaría
 
-## Deploy on Vercel
+- Implementar roles de usuario (admin, editor, etc).
+- Agregar paginación a la lista de artículos.
+- Mejorar accesibilidad (a11y) en formularios y botones.
+- SEO básico con metadatos dinámicos por artículo.
+- Soporte para imágenes en los artículos.
+- Versión mobile mejorada y navegación offline-first.
+- Tests automatizados (unitarios y end-to-end con Playwright).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+_Desarrollado con ❤️ por Elias como parte del challenge técnico de Wortise._
