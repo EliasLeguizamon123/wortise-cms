@@ -8,7 +8,7 @@ export default function AuthorCard({ author }: Props) {
     return(
         <div
             key={author.id}
-            className="w-full bg-white shadow rounded-md p-4 hover:shadow-md transition-shadow duration-200"
+            className="cursor-default w-full bg-white shadow rounded-md p-4 hover:shadow-md transition-shadow duration-200"
         >
             <div className="flex justify-between items-start">
                 <div className="flex-1">
@@ -16,7 +16,7 @@ export default function AuthorCard({ author }: Props) {
                     <p className="text-sm text-gray-500">{author.email}</p>
                 </div>
                 <div className="text-right">
-                    <span className="text-blue-600 font-bold">{author.articlesCount} articles published</span>
+                    <span className="text-blue-600 font-bold">{author.articlesCount} artículos publicados</span>
                 </div>
             </div>
         </div>

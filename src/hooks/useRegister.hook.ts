@@ -2,6 +2,7 @@
 "use client";
 
 import { AuthService } from "@/services/auth.service";
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -16,7 +17,13 @@ export function useRegister() {
         try {
             const res = await AuthService.register(name, email, password);
 
-            sessionStorage.setItem("user", res.user.name);
+            //* Save username in cookie of 7 days expiration
+            const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+            
+            setCookie("user", JSON.stringify(res.user), {
+                expires,
+                path: "/",
+            });
 
             router.push("/");
 

@@ -1,9 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Article } from "@/models/Article.model"
+import { trpc } from "@/trpc/client";
 import { Pencil, Trash } from "lucide-react"
-import { useRouter } from "next/navigation";
+import { ObjectId } from "mongodb";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react"
+import { toast } from "sonner";
 
 export interface Props {
     article: Article
@@ -13,23 +16,31 @@ export default function ArticleCard({ article }: Props) {
     const [ imageErrors, setImageErrors ] = useState<Set<string>>(new Set())
 
     const router = useRouter();
+    const pathname = usePathname();
 
-    const handleImageError = (articleId: string) => {
-        setImageErrors((prev) => new Set(prev).add(articleId))
+    const deleteArticle = trpc.deleteArticleById.useMutation()
+
+
+    const handleImageError = (articleId: string | ObjectId) => {
+        setImageErrors((prev) => new Set(prev).add(articleId.toString()))
     }
 
-    const handleEditArticle = (e: React.MouseEvent, articleId: string) => {
+    const handleEditArticle = (e: React.MouseEvent, articleId: string | ObjectId) => {
         e.stopPropagation()
-        // console.log("edit", articleId)
+        router.push(`${pathname}/${articleId}/edit`)
     }
 
-    const handleDeleteArticle = (e: React.MouseEvent, articleId: string) => {
+    const handleDeleteArticle = async (e: React.MouseEvent, articleId: string | ObjectId) => {
         e.stopPropagation()
-        // console.log("delete", articleId)
+        await deleteArticle.mutateAsync(String(articleId));
+
+        toast.success("Artículo eliminado correctamente");
+
+        window.location.reload();
     }
 
-    const handleCardClick = (articleId: string) => {
-        router.push(`/articles/${articleId}`)
+    const handleCardClick = (articleId: string | ObjectId) => {
+        router.push(`${pathname}/${articleId}`)
     }
 
     return (
@@ -41,13 +52,13 @@ export default function ArticleCard({ article }: Props) {
             <div className="absolute top-2 right-2 hidden group-hover:flex gap-2 z-10">
                 <button
                     onClick={(e) => handleEditArticle(e, article._id)}
-                    className="h-8 w-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+                    className="cursor-pointer h-8 w-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors duration-200"
                 >
                     <Pencil className="h-4 w-4 text-gray-600" />
                 </button>
                 <button
                     onClick={(e) => handleDeleteArticle(e, article._id)}
-                    className="h-8 w-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-red-50 transition-colors duration-200"
+                    className="cursor-pointer h-8 w-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-red-200 transition-colors duration-200"
                 >
                     <Trash className="h-4 w-4 text-red-600" />
                 </button>
@@ -55,7 +66,7 @@ export default function ArticleCard({ article }: Props) {
 
             {/* Cover Image - 90% height */}
             <div className="flex-1 relative" style={{ height: "90%" }}>
-                {!imageErrors.has(article._id) && article.coverImageUrl ? (
+                {!imageErrors.has(article._id.toString()) && article.coverImageUrl ? (
                     <img
                         src={article.coverImageUrl || "/placeholder.svg"}
                         alt={article.title}
@@ -74,8 +85,7 @@ export default function ArticleCard({ article }: Props) {
                 )}
             </div>
 
-            {/* Title Section - 10% height */}
-            <div className="p-2" style={{ height: "15%" }}>
+            <div className="px-2" style={{ height: "15%" }}>
                 <h3 className="text-base font-semibold text-gray-900 truncate">{article.title}</h3>
             </div>
         </div>
